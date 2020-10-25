@@ -1,15 +1,12 @@
 #ifndef MICRO_TUPLE_H
 #define MICRO_TUPLE_H
 
-#if (ARDUINO >= 100)
-    #include "Arduino.h"
-#else
-    #include "WProgram.h"
-#endif
-
 
 template<size_t idx, typename T>
 struct microTupleGetHelper;
+
+template<size_t idx, typename T>
+struct microTupleSetHelper;
 
 template<typename ... T>
 struct MicroTuple
@@ -41,6 +38,12 @@ struct MicroTuple<T, Rest ...>
     {
         return microTupleGetHelper<idx, MicroTuple<T,Rest...>>::get(*this);
     }
+
+    template<size_t idx>
+    void set(T value)
+    {
+        microTupleSetHelper<idx, MicroTuple<T,Rest...>>::set(value, *this);
+    }
 };
 
 template<typename T, typename ... Rest>
@@ -61,6 +64,27 @@ struct microTupleGetHelper<idx, MicroTuple<T, Rest ... >>
     }
 };
 
+template<typename T, typename ... Rest>
+struct microTupleSetHelper<0, MicroTuple<T, Rest ... >>
+{
+    static T set(T value, MicroTuple<T, Rest...>& data)
+    {
+        data.first = value;
+        return data.first;
+    }
+};
+
+template<size_t idx, typename T, typename ... Rest>
+struct microTupleSetHelper<idx, MicroTuple<T, Rest ... >>
+{
+    static auto set(T value, MicroTuple<T, Rest...>& data) ->  decltype(microTupleGetHelper<idx-1, MicroTuple<Rest ...>>::set(value, data.rest))
+    {
+        return microTupleGetHelper<idx-1, MicroTuple<Rest ...>>::set(value, data.rest);
+    }
+};
+
+
+
 
 
 template <typename ...Args>
@@ -68,7 +92,7 @@ class ParamsPack
 {
 public:
     MicroTuple<Args...> params;
-    operator bool() const { if (func) return true; return false; };
+    operator bool() const { return (func) ? true : false; };
     void (*func)(Args...);
 private:
     template<int ...S>

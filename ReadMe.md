@@ -10,6 +10,7 @@ Usage:
 
 	//could aslo use only the data structure if needed:
 	int firstItem = data.get<0>();  								//get the firts item of the pack, this case an integer
+	data.set<0>(newValue);											//set the first item of the pack to a new value
 
 ` 
 

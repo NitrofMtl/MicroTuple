@@ -15,6 +15,10 @@ void setup(){
 
 	//could aslo use only the data structure if needed:
 	int firstItem = data.get<0>();  								//get the firts item of the pack, this case an integer
+	Serial.println(firstItem);
+	firstItem = 500;
+	data.set<0>(firstItem);											//set the first item of the pack to a new value
+	Serial.println(data.get<0>());
 }
 void loop(){
 
