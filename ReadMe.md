@@ -14,5 +14,4 @@ MicroTuple is a small Arduino library that enables variadic data structures and 
 	data.set<0>(newValue);											//set the first item of the pack to a new value
 ```
 
-
 Copyright (c) 02/04/2020 NitrofMtl - License GPL-V3.0
